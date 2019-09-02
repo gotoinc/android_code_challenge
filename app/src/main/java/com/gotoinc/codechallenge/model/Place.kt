@@ -1,6 +1,7 @@
 package com.gotoinc.codechallenge.model
 
 data class Place(
+    val id: Int,
     val markerColor: String,
     val latitude: Double,
     val longitude: Double,

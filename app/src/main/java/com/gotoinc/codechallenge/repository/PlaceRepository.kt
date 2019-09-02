@@ -22,6 +22,7 @@ object PlaceRepository {
             )
             this.add(
                 Place(
+                    i,
                     colorsList[i],
                     latitude + ((i * 30) + 300) / 1_000_00f,
                     longitude + ((i * 30) + 300) / 1_000_00f,

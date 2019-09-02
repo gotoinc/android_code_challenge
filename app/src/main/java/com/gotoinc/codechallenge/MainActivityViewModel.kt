@@ -6,22 +6,16 @@ import com.google.android.gms.maps.model.LatLng
 import com.gotoinc.codechallenge.model.Place
 import com.gotoinc.codechallenge.repository.PlaceRepository
 
-class MainActivityViewModel(latLng: LatLng) : ViewModel(){
+class MainActivityViewModel() : ViewModel(){
     private val repository = PlaceRepository
 
-    var places: List<Place>
+    var places = emptyList<Place>()
 
-    init {
+    fun getUpdatedPlaces(latLng: LatLng): List<Place> {
         places = repository.getPlaces(latLng)
+        return places
     }
 
 
 
-}
-
-
-class MainActivityViewModelFactory(private val latLng: LatLng) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return MainActivityViewModel(latLng) as T
-    }
 }
