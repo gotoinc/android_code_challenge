@@ -8,6 +8,7 @@ import android.content.pm.PackageManager.*
 import android.location.LocationListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.*
 import androidx.lifecycle.MutableLiveData
@@ -24,10 +25,14 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.gotoinc.codechallenge.model.Place
 import com.gotoinc.codechallenge.util.LOCATION_REQUEST
 import com.gotoinc.codechallenge.util.bitmapDescriptorFromVector
 import com.gotoinc.codechallenge.util.toLatLng
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.bottom_sheet.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -41,6 +46,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+
     private lateinit var map: GoogleMap
 
     private val liveLocation = MutableLiveData<LatLng>()
@@ -50,9 +57,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
+        bottomSheetBehavior = from(bottomSheet)
+        bottomSheetBehavior.state = STATE_HIDDEN
         (supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment).getMapAsync(this)
 
         liveLocation.observe(this, Observer { setupMap(it) })
+        liveSelectedMarker.observe(this, Observer { updateInfo(it) })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -101,11 +111,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
         map.setOnMarkerClickListener { marker ->
-            liveSelectedMarker.value = vm.places.firstOrNull { it.id == marker.id.toInt() }
+            liveSelectedMarker.value = vm.places.firstOrNull { it.id == marker.tag }
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.position, map.cameraPosition.zoom + 0.25F))
             true
         }
+    }
 
-
+    private fun updateInfo(place: Place?) {
+        if (place == null) {
+            bottomSheetBehavior.state = STATE_HIDDEN
+            return
+        } else  bottomSheetBehavior.state = STATE_COLLAPSED
+        tvAlertTitle.text = place.data.title
+        tvSubTitle.text = place.data.subtitle
+        tvSampleTitle.text = place.data.description
+        Picasso.get().load(place.data.images[0]).into(ivCover)
     }
 
 }

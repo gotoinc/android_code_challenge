@@ -11,9 +11,9 @@ object PlaceRepository {
     fun getPlaces(latitude: Double, longitude: Double) = ArrayList<Place>().apply {
         for (i in 0 until 5) {
             val placeData = PlaceData(
-                "Extreme Alert",
-                "Subtitle goes here",
-                "Here is a sample title for an active marker",
+                "Extreme Alert $i",
+                "$i Subtitle goes here",
+                "Here $i is a sample title for an active marker",
                 listOf(
                     "https://images.immediate.co.uk/production/volatile/sites/10/2018/02/7dce6028-0e39-4c0a-aa06-2a5b26285f9a-45028f8.jpg?quality=45&crop=13px,20px,2022px,860px&resize=960,640",
                     "https://images.immediate.co.uk/production/volatile/sites/10/2018/02/7dce6028-0e39-4c0a-aa06-2a5b26285f9a-45028f8.jpg?quality=45&crop=13px,20px,2022px,860px&resize=960,640"
@@ -24,8 +24,8 @@ object PlaceRepository {
                 Place(
                     i,
                     colorsList[i],
-                    latitude + ((i * 30) + 300) / 1_000_00f,
-                    longitude + ((i * 30) + 300) / 1_000_00f,
+                    latitude + ((i * 30) + 500 ) / 1_000_00f,
+                    longitude + ((i * 30) + 500) / 1_000_00f,
                     "Awesome address",
                     100 + (i * 30),
                     placeData
